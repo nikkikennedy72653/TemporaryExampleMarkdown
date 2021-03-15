@@ -1,0 +1,71 @@
+---
+title: "Example March 2021"
+author: "Nikki Kennedy"
+date: "3/15/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) 'latex' else 'pandoc'
+})
+```
+
+# Understanding Functional Relationships and the Logic of OLS Regression
+
+
+
+$$y= f(x,z)=2x^2-8x+3z^2-3z+12$$
+$$\frac{\partial y}{\partial x}= 4x-8$$
+When compliance incentives are zero, i.e. $z=0$, then $f(x,0)=2x^2-8x+12$ and the minimum violations will be y= `r 2*4-8*2+12`. The level of sanctions that will minimize violations will occur for $\frac{\partial y}{\partial x}=0$ such that x=`r 8/(2*2)`. 
+
+```{r, echo=FALSE}
+x=seq(0,4,.005)
+plot(x,2*x^2-8*x+12, col="blue",xlab="X=Punitive Sanctions", main="Human Rights Violations Based on Sanctions for No Incentives")
+points(2,4,cex=3,col="navy")
+```
+
+
+Ultimately the priority is to  minimize human rights violations by using an appropriate combination of sanctions and incentives. This ideal combination can be determined by using multivariable calculus to solve for the mimimum values of violations, $y$. 
+
+To optimize a multivariable function of the form $y=f(x,z)$, we solve for solve for critical values of the function when both $\frac{\partial y}{\partial x}=0$ and $\frac{\partial y}{\partial z}=0$. Since $\frac{\partial y}{\partial x}= 4x-8$ and $\frac{\partial y}{\partial z}=6z-3$, then there is a possible extremum of $f(2,2)=$ `r 2*4-8*2+3*4-3*2+12`. Since both $\frac{\partial^2 y}{\partial x^2}>0$ and $\frac{\partial^2 y}{\partial z^2}>0$, then this extremum represents the minimum violations using a combination of both sanctions and incentives. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+n=10 #length(Sanctions) 
+k=10 #length(Incentives)
+Violations = matrix(data=NA,nrow=n,ncol=k)
+Sanctions = seq(0,4.5,0.5)
+Incentives = seq(0,4.5,0.5)
+
+
+for(i in 1:k){ 
+  for(j in 1:n){ 
+  Violations[i,j] = 2*(Sanctions[i])^2-8*Sanctions[i]+3*(Incentives[j])^2-3*Incentives[j]+12} 
+}
+library(plotly)
+plot_ly(showscale=TRUE, x=~Sanctions, y=~Incentives) %>% add_surface(z = ~Violations)
+
+```
+As demonstrated algebraically and graphically, having sanctions at level 2 and incentives at level 2 will minimize the number of violations according to this information. 
+
+
+
+
+\newpage
+# References
+
+<div id="refs"></div>
+
+Fox, John. (2008). Applied Regression Analysis and Generalized Linear Models (2nd edition). Chapter 9.  
+
+Fox, John, and Sanford Weisberg An R Companion to Applied Regression. SAGE Publications, Inc. (US), 2018. [VitalSource Bookshelf].
+
+Heij, Christiaan & De Boer, Paul & Franses, Philip & Kloek, Teun & Van Dijk, Herman. (2004). Econometric Methods with Applications in Business and Economics. pp. 118-130
+
+# Appendix: R code for this assigment.
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
